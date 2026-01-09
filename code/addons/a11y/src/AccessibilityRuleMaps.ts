@@ -584,11 +584,23 @@ const axeRuleMapping_deprecated: AxeRuleMap = {
   },
 };
 
+// Rules that align with WCAG 3.0 (draft) success criteria.
+const axeRuleMapping_wcag_3_0: AxeRuleMap = {
+  'apca-contrast': {
+    title: 'APCA color contrast',
+    axeSummary:
+      'Ensure the contrast between foreground and background text meets WCAG 3.0 APCA thresholds',
+    friendlySummary:
+      'Text has sufficient perceptual contrast using the APCA method (WCAG 3.0). APCA uses Lc values: body text needs ≥75 Lc, secondary content ≥60 Lc, and spot text ≥50 Lc.',
+  },
+};
+
 export const combinedRulesMap: AxeRuleMap = {
   ...axeRuleMapping_wcag_2_0_a_aa,
   ...axeRuleMapping_wcag_2_1_a_aa,
   ...axeRuleMapping_wcag_2_2_a_aa,
   ...axeRuleMapping_wcag_2_x_aaa,
+  ...axeRuleMapping_wcag_3_0,
   ...axeRuleMapping_best_practices,
   ...axeRuleMapping_experimental,
   ...axeRuleMapping_deprecated,
