@@ -105,12 +105,19 @@ export const run = async (input: A11yParameters = DEFAULT_PARAMETERS, storyId: s
         const result = await axe.run(context, options);
 
         // Run APCA checks
-        const contextElement =
-          context.include instanceof Element
-            ? context.include
-            : Array.isArray(context.include)
-              ? (context.include[0] as Element)
-              : document.body;
+        let contextElement = document.body;
+        if (context.include instanceof Element) {
+          contextElement = context.include;
+        } else if (Array.isArray(context.include)) {
+          const first = context.include[0];
+          if (first instanceof Element) {
+            contextElement = first;
+          } else if (typeof first === 'string') {
+            contextElement = document.querySelector(first) || document.body;
+          }
+        } else if (typeof context.include === 'string') {
+          contextElement = document.querySelector(context.include) || document.body;
+        }
         const apcaResult = await runAPCACheck(contextElement);
 
         // Merge APCA results with axe results

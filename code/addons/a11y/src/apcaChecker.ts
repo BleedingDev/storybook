@@ -62,9 +62,6 @@ function parseColor(color: string): [number, number, number] | null {
  * Determine the appropriate APCA threshold based on font size and weight
  */
 function getAPCAThreshold(fontSize: number, fontWeight: number): number {
-  // Convert font size from px to points (approximately)
-  const fontSizePt = fontSize * 0.75;
-
   // For larger fonts (≥24px and weight ≥300), use lower threshold
   if (fontSize >= 24 && fontWeight >= 300) {
     return APCA_THRESHOLDS.SECONDARY_TEXT;
@@ -105,7 +102,7 @@ function isVisible(element: Element): boolean {
  */
 export async function runAPCACheck(context: Element | Document = document): Promise<Result> {
   // Dynamic import of APCA library
-  const { calcAPCA, sRGBtoY } = await import('apca-w3');
+  const { APCAcontrast, sRGBtoY } = await import('apca-w3');
 
   const violations: APCAViolation[] = [];
   const root = context instanceof Document ? context.body : context;
@@ -142,7 +139,7 @@ export async function runAPCACheck(context: Element | Document = document): Prom
       // Calculate APCA contrast
       const fgLuminance = sRGBtoY(fgColor);
       const bgLuminance = sRGBtoY(bgColor);
-      const contrastValue = Math.abs(calcAPCA(fgLuminance, bgLuminance));
+      const contrastValue = Math.abs(APCAcontrast(fgLuminance, bgLuminance));
 
       // Get appropriate threshold
       const threshold = getAPCAThreshold(fontSize, fontWeight);
@@ -166,15 +163,27 @@ export async function runAPCACheck(context: Element | Document = document): Prom
   });
 
   // Convert violations to axe-core compatible format
-  const nodes: NodeResult[] = violations.map((violation) => ({
-    html: violation.element.outerHTML,
-    target: [getSelector(violation.element)],
-    any: [],
-    all: [],
-    none: [],
-    impact: getImpact(violation.contrastValue, violation.threshold),
-    failureSummary: `APCA contrast of ${violation.contrastValue.toFixed(1)} Lc is below the minimum of ${violation.threshold} Lc for this text size and weight.`,
-  }));
+  const nodes: NodeResult[] = violations.map((violation) => {
+    const impact = getImpact(violation.contrastValue, violation.threshold);
+    const message = `APCA contrast of ${violation.contrastValue.toFixed(1)} Lc is below the minimum of ${violation.threshold} Lc for this text size and weight.`;
+    return {
+      html: violation.element.outerHTML,
+      target: [getSelector(violation.element)],
+      any: [
+        {
+          id: 'apca-contrast',
+          impact,
+          message,
+          data: null,
+          relatedNodes: [],
+        },
+      ],
+      all: [],
+      none: [],
+      impact,
+      failureSummary: `Fix any of the following:\n  ${message}`,
+    };
+  });
 
   return {
     id: 'apca-contrast',
