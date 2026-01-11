@@ -73,3 +73,15 @@ export const Silver: Story = {
     },
   },
 };
+
+export const Bronze: Story = {
+  render: Sample,
+  parameters: {
+    a11y: {
+      apca: {
+        level: 'bronze',
+        useCase: 'body',
+      },
+    },
+  },
+};

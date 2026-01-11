@@ -1619,14 +1619,14 @@ __metadata:
 
 "@storybook/addon-a11y@file:../../../code/addons/a11y::locator=portable-stories-react%40workspace%3A.":
   version: 10.2.0-alpha.14
-  resolution: "@storybook/addon-a11y@file:../../../code/addons/a11y#../../../code/addons/a11y::hash=dda946&locator=portable-stories-react%40workspace%3A."
+  resolution: "@storybook/addon-a11y@file:../../../code/addons/a11y#../../../code/addons/a11y::hash=c06b15&locator=portable-stories-react%40workspace%3A."
   dependencies:
     "@storybook/global": "npm:^5.0.0"
     apca-w3: "npm:^0.1.9"
     axe-core: "npm:^4.2.0"
   peerDependencies:
     storybook: "workspace:^"
-  checksum: 10c0/cd4f948e0541c2536ef861df9c00a0162b16fd6242056866befeec15d8383f274b341ac3464cdd63449120dcbcf19339c44198e86de4bfa47fe0d8e42d2df92b
+  checksum: 10c0/626fd8b6b94b6ad1bf964fbdfd75845618b034ac890f4f2cd1b8ea35270f012bcfc7dee78e7fb56c7e7055fbfd10026f9a69b74256f1c827c7573b33f3e99830
   languageName: node
   linkType: hard
 
