@@ -589,9 +589,9 @@ const axeRuleMapping_wcag_3_0: AxeRuleMap = {
   'apca-contrast': {
     title: 'APCA color contrast',
     axeSummary:
-      'Ensure the contrast between foreground and background text meets WCAG 3.0 APCA thresholds',
+      'Ensure the contrast between foreground and background text meets WCAG 3.0 APCA thresholds for the configured conformance level and use case',
     friendlySummary:
-      'Text has sufficient perceptual contrast using the APCA method (WCAG 3.0). APCA uses Lc values: body text needs ≥75 Lc, secondary content ≥60 Lc, and spot text ≥50 Lc.',
+      'Text has sufficient perceptual contrast using the APCA method (WCAG 3.0). Thresholds vary by conformance level (bronze, silver, gold) and use case (body, fluent, sub-fluent, non-fluent).',
   },
 };
 

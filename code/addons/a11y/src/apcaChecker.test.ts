@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+/* @vitest-environment happy-dom */
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { runAPCACheck } from './apcaChecker';
 
@@ -32,6 +33,7 @@ describe('apcaChecker', () => {
 
     expect(result.id).toBe('apca-contrast');
     expect(result.nodes.length).toBeGreaterThan(0);
+    expect(result.nodes[0].failureSummary).toContain('Fix any of the following');
     expect(result.nodes[0].failureSummary).toContain('APCA contrast');
   });
 
@@ -112,6 +114,36 @@ describe('apcaChecker', () => {
 
     expect(result.id).toBe('apca-contrast');
     // Should detect violation even with inherited background
+  });
+
+  it('should enforce gold minimum font size for body text', async () => {
+    const textElement = document.createElement('p');
+    textElement.textContent = 'Small body text';
+    textElement.style.color = 'rgb(0, 0, 0)';
+    textElement.style.backgroundColor = 'rgb(255, 255, 255)';
+    textElement.style.fontSize = '12px';
+    textElement.style.fontWeight = '400';
+    container.appendChild(textElement);
+
+    const result = await runAPCACheck(container, { level: 'gold', useCase: 'body' });
+
+    expect(result.nodes.length).toBeGreaterThan(0);
+    expect(result.nodes[0].failureSummary).toContain('minimum 16px');
+  });
+
+  it('should flag excessive contrast for large text at silver', async () => {
+    const textElement = document.createElement('h1');
+    textElement.textContent = 'Large heading';
+    textElement.style.color = 'rgb(0, 0, 0)';
+    textElement.style.backgroundColor = 'rgb(255, 255, 255)';
+    textElement.style.fontSize = '40px';
+    textElement.style.fontWeight = '400';
+    container.appendChild(textElement);
+
+    const result = await runAPCACheck(container, { level: 'silver', useCase: 'body' });
+
+    expect(result.nodes.length).toBeGreaterThan(0);
+    expect(result.nodes[0].failureSummary).toContain('exceeds the maximum');
   });
 
   it('should include proper metadata in results', async () => {

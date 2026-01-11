@@ -17,6 +17,16 @@ export type ContextSpecWithoutNode = SelectorWithoutNode | ContextObjectWithoutN
 
 type A11yTest = 'off' | 'todo' | 'error';
 
+export type ApcaConformanceLevel = 'bronze' | 'silver' | 'gold';
+export type ApcaUseCase = 'body' | 'fluent' | 'sub-fluent' | 'non-fluent';
+
+export interface ApcaParameters {
+  /** Conformance level to apply to APCA checks. */
+  level?: ApcaConformanceLevel;
+  /** Default use case to apply when scanning text. */
+  useCase?: ApcaUseCase;
+}
+
 export interface A11yParameters {
   /**
    * Context parameter for axe-core's run function, except without support for passing Nodes and
@@ -41,4 +51,6 @@ export interface A11yParameters {
   disable?: boolean;
   /** Defines how accessibility violations should be handled: 'off', 'todo', or 'error'. */
   test?: A11yTest;
+  /** APCA options for contrast checking. */
+  apca?: ApcaParameters;
 }
