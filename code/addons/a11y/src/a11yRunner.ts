@@ -6,6 +6,7 @@ import type { AxeResults, ContextProp, ContextSpec } from 'axe-core';
 import { addons, waitForAnimations } from 'storybook/preview-api';
 
 import { withLinkPaths } from './a11yRunnerUtils';
+import { runAPCACheck } from './apcaChecker';
 import { EVENTS } from './constants';
 import type { A11yParameters } from './params';
 
@@ -100,7 +101,32 @@ export const run = async (input: A11yParameters = DEFAULT_PARAMETERS, storyId: s
 
     const task = async () => {
       try {
+        // Run axe-core checks
         const result = await axe.run(context, options);
+
+        // Run APCA checks
+        let contextElement = document.body;
+        if (context.include instanceof Element) {
+          contextElement = context.include;
+        } else if (Array.isArray(context.include)) {
+          const first = context.include[0];
+          if (first instanceof Element) {
+            contextElement = first;
+          } else if (typeof first === 'string') {
+            contextElement = document.querySelector(first) || document.body;
+          }
+        } else if (typeof context.include === 'string') {
+          contextElement = document.querySelector(context.include) || document.body;
+        }
+        const apcaResult = await runAPCACheck(contextElement, input.apca);
+
+        // Merge APCA results with axe results
+        if (apcaResult.nodes.length > 0) {
+          result.violations.push(apcaResult);
+        } else {
+          result.passes.push(apcaResult);
+        }
+
         const resultWithLinks = withLinkPaths(result, storyId);
         resolve(resultWithLinks);
       } catch (error) {
